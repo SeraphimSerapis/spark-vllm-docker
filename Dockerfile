@@ -197,6 +197,14 @@ RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
 RUN curl -L https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/34758.diff | patch -p1 -R || echo "Cannot revert PR #34758, skipping"
 RUN curl -L https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/34302.diff | patch -p1 -R || echo "Cannot revert PR #34302, skipping"
 
+# FIX: SM121 (GB10/DGX Spark) FP8 CUTLASS — enable_sm120_only traps on SM12.1
+# The enable_sm120_only guard checks __CUDA_ARCH__ == 1200 which fails on SM12.1 (1210).
+# enable_sm120_family uses >= 1200 && < 1300, covering both SM12.0 and SM12.1.
+# Tracking: https://github.com/saifgithub/vllm-gb10-sm121
+RUN sed -i 's/enable_sm120_only/enable_sm120_family/g' \
+    csrc/quantization/w8a8/cutlass/c3x/scaled_mm.cuh \
+    csrc/quantization/w8a8/cutlass/c3x/scaled_mm_sm120_fp8_dispatch.cuh
+
 # Final Compilation
 RUN --mount=type=cache,id=ccache,target=/root/.ccache \
     --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
