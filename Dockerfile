@@ -201,15 +201,15 @@ RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
 # TEMPORARY PATCH for broken vLLM build (unguarded Hopper code) - reverting PR #34758 and #34302
 # RUN curl -L https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/34758.diff | patch -p1 -R || echo "Cannot revert PR #34758, skipping"
 # RUN curl -L https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/34302.diff | patch -p1 -R || echo "Cannot revert PR #34302, skipping"
-# # TEMPORARY PATCH for broken NVFP4 quants
-# RUN curl -fsL https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/38126.diff -o pr38126.diff \
-#     && if git apply --reverse --check pr38126.diff 2>/dev/null; then \
-#          echo "Patch already applied, skipping."; \
-#        else \
-#          echo "Applying patch..."; \
-#          git apply -v pr38126.diff; \
-#        fi \
-#     && rm pr38126.diff
+# # TEMPORARY PATCH for broken compilation
+RUN curl -fsL https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/38423.diff -o pr38423.diff \
+    && if git apply --reverse --check pr38423.diff 2>/dev/null; then \
+         echo "Patch already applied, skipping."; \
+       else \
+         echo "Applying patch..."; \
+         git apply -v pr38423.diff; \
+       fi \
+    && rm pr38423.diff
 
 # Final Compilation
 RUN --mount=type=cache,id=ccache,target=/root/.ccache \
