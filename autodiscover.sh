@@ -15,7 +15,8 @@ load_env_if_exists() {
     fi
 
     # Validate config file exists if explicitly specified
-    if [[ "$config_explicit" == "true" ]] && [[ ! -f "$env_file" ]]; then
+    # Exception: if --setup is also specified, the file will be created by the setup procedure
+    if [[ "$config_explicit" == "true" ]] && [[ ! -f "$env_file" ]] && [[ "${FORCE_DISCOVER:-false}" != "true" ]]; then
         echo "Error: Config file not found: $env_file"
         exit 1
     fi
