@@ -511,7 +511,7 @@ if [[ "$ACTION" == "start" || "$ACTION" == "exec" || "$CHECK_CONFIG" == "true" ]
     fi
 fi
 
-if [[ -z "$ACTION" && "$LAUNCH_SCRIPT_MODE" != "true" ]]; then
+if [[ -z "$ACTION" && "$LAUNCH_SCRIPT_MODE" != "true" && "$CHECK_CONFIG" != "true" ]]; then
     echo "Error: No action specified. Use: start | stop | status | exec"
     usage
     exit 1
