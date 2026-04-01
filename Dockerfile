@@ -132,6 +132,16 @@ RUN curl -fsL https://github.com/flashinfer-ai/flashinfer/pull/2913.diff -o pr29
        fi \
     && rm pr2913.diff
 
+# TEMPORARY patch for flashinfer autotune and other improvements (PR 2897)
+RUN curl -fsL https://github.com/flashinfer-ai/flashinfer/pull/2897.diff -o pr2897.diff \
+    && if git apply --reverse --check pr2897.diff 2>/dev/null; then \
+         echo "PR #2897 already applied, skipping."; \
+       else \
+         echo "Applying FI PR #2897..."; \
+         git apply -v pr2897.diff; \
+       fi \
+    && rm pr2897.diff
+
 # Apply patch to avoid re-downloading existing cubins
 COPY flashinfer_cache.patch .
 RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
