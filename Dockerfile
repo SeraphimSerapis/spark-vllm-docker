@@ -204,15 +204,9 @@ RUN if [ -n "$VLLM_PRS" ]; then \
         done; \
     fi
 
-# TEMPORARY PATCH for broken FP8 kernels - https://github.com/vllm-project/vllm/pull/35568
-RUN curl -fsL https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/35568.diff -o pr35568.diff \
-    && if git apply --reverse --check pr35568.diff 2>/dev/null; then \
-         echo "PR 35568 already applied, skipping."; \
-       else \
-         echo "Applying PR 35568..."; \
-         git apply -v pr35568.diff; \
-       fi \
-    && rm pr35568.diff
+# SM121 (DGX Spark) FP8 fixes — equivalent to PR #35568 but context-independent
+COPY patches/sm121-fp8-fix.sh /tmp/sm121-fp8-fix.sh
+RUN /tmp/sm121-fp8-fix.sh && rm /tmp/sm121-fp8-fix.sh
 
 # TEMPORARY PATCH for broken compilation - https://github.com/vllm-project/vllm/pull/38919
 RUN curl -fsL https://patch-diff.githubusercontent.com/raw/vllm-project/vllm/pull/38919.diff -o pr38919.diff \
